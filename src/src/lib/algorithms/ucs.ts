@@ -117,32 +117,6 @@ const ucs = (initialBoard: string[][], initialPieces: PiecesMap): SolutionResult
       // Masukkan status baru ke dalam antrean
       openList.push(newState);
     }
-
-    // Batasan keamanan: berhenti jika terlalu banyak node diperiksa
-    if (nodesVisited > 100000) {
-      const end = performance.now();
-      return {
-        solved: bestSolution.cost !== Infinity,
-        moves: bestSolution.moves,
-        nodesVisited,
-        executionTime: end - start,
-      };
-    }
-
-    // Pemeriksaan waktu: hentikan jika algoritma berjalan terlalu lama
-    if (nodesVisited % 10000 === 0) {
-      const currentTime = performance.now();
-      if (currentTime - start > 30000) {
-        // batas waktu 30 detik
-        const end = performance.now();
-        return {
-          solved: bestSolution.cost !== Infinity,
-          moves: bestSolution.moves,
-          nodesVisited,
-          executionTime: end - start,
-        };
-      }
-    }
   }
 
   // Jika antrean kosong

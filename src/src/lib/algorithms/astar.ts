@@ -111,32 +111,6 @@ const astar = (initialBoard: string[][], initialPieces: PiecesMap, heuristicFunc
       // Masukkan status baru ke dalam antrean
       openList.push(newState);
     }
-
-    // Batasan keamanan: berhenti jika terlalu banyak node diperiksa
-    if (nodesVisited > 100000) {
-      const end = performance.now();
-      return {
-        solved: false,
-        moves: [],
-        nodesVisited,
-        executionTime: end - start,
-      };
-    }
-
-    // Pemeriksaan waktu: hentikan jika algoritma berjalan terlalu lama
-    if (nodesVisited % 10000 === 0) {
-      const currentTime = performance.now();
-      if (currentTime - start > 30000) {
-        // batas waktu 30 detik
-        const end = performance.now();
-        return {
-          solved: false,
-          moves: [],
-          nodesVisited,
-          executionTime: end - start,
-        };
-      }
-    }
   }
 
   // Jika antrean kosong dan tidak ditemukan solusi
