@@ -18,11 +18,10 @@ const greedy = (initialBoard: string[][], initialPieces: PiecesMap, heuristicFun
   const start = performance.now();
   const visitedStates = new Set<string>();
 
+  // Use priority queue for efficient state selection
   const openList = new PriorityQueue<SearchState>((a, b) => a.heuristic - b.heuristic);
 
   let nodesVisited = 0;
-  let bestHeuristic = Infinity;
-  let plateauCounter = 0;
 
   const initialState: SearchState = {
     board: initialBoard,
@@ -30,11 +29,10 @@ const greedy = (initialBoard: string[][], initialPieces: PiecesMap, heuristicFun
     stateString: getBoardStateString(initialBoard),
     heuristic: heuristicFunc(initialBoard, initialPieces),
     moves: [],
-    cost: 0, // Initialize cost at 0
+    cost: 0,
   };
 
   openList.push(initialState);
-  bestHeuristic = initialState.heuristic;
 
   while (!openList.isEmpty()) {
     nodesVisited++;
@@ -62,38 +60,13 @@ const greedy = (initialBoard: string[][], initialPieces: PiecesMap, heuristicFun
       continue;
     }
 
-    // Track if we're making progress
-    if (currentState.heuristic < bestHeuristic) {
-      bestHeuristic = currentState.heuristic;
-      plateauCounter = 0;
-    } else {
-      plateauCounter++;
-
-      // If stuck on a plateau for too long, occasionally make a random move
-      if (plateauCounter > 50 && plateauCounter % 10 === 0) {
-        // Create a temporary array for random exploration
-        const tempList: SearchState[] = [];
-        while (!openList.isEmpty() && tempList.length < 100) {
-          tempList.push(openList.pop()!);
-        }
-
-        // Shuffle the temporary list
-        tempList.sort(() => Math.random() - 0.5);
-
-        // Push items back to queue
-        tempList.forEach((state) => openList.push(state));
-
-        // Skip to next iteration
-        continue;
-      }
-    }
-
     const validMoves = getValidMoves(currentState.board, currentState.pieces);
 
     for (const move of validMoves) {
       const { board: newBoard, pieces: newPieces } = applyMove(currentState.board, currentState.pieces, move);
       const newStateString = getBoardStateString(newBoard);
 
+      // Skip already visited states
       if (visitedStates.has(newStateString)) continue;
 
       const newHeuristic = heuristicFunc(newBoard, newPieces);
