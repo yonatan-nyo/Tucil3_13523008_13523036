@@ -95,6 +95,24 @@ export const getPiecesInfo = (boardConfig: string[]): PiecesMap => {
   
   const MAX_PIECES = 24;
 
+  // Helper function to check if a cell should be ignored
+  const isIgnoredCell = (cell: string) => cell === '.' || cell === ' ';
+  
+  // Helper function to check if two cells should be considered part of the same piece
+  const isSamePiece = (cell1: string, cell2: string) => {
+    // If either cell is to be ignored, they're not the same piece
+    if (isIgnoredCell(cell1) || isIgnoredCell(cell2)) return false;
+    
+    // Only compare alphabetic characters
+    const isAlphaChar = (char: string) => /^[A-Za-z]$/.test(char);
+    
+    if (isAlphaChar(cell1) && isAlphaChar(cell2)) {
+      return cell1 === cell2;
+    }
+    
+    return false;
+  };
+
   // find all pieces and their positions
   for (let i = 0; i < boardMatrix.length; i++) {
     for (let j = 0; j < boardMatrix[i].length; j++) {
@@ -102,8 +120,14 @@ export const getPiecesInfo = (boardConfig: string[]): PiecesMap => {
       const posKey = `${i},${j}`;
 
       if (visited.has(posKey)) continue;
+      
+      // Skip periods and spaces
+      if (isIgnoredCell(cell)) {
+        visited.add(posKey);
+        continue;
+      }
 
-      if (cell !== "." && cell !== "K") {
+      if (cell !== "K") {
         if (usedSymbols.has(cell)) {
           throw new Error(`Duplicate piece symbol '${cell}' detected. Each letter can only be used once.`);
         }
@@ -138,7 +162,7 @@ export const getPiecesInfo = (boardConfig: string[]): PiecesMap => {
               newRow < boardMatrix.length &&
               newCol >= 0 &&
               newCol < boardMatrix[newRow].length &&
-              boardMatrix[newRow][newCol] === cell &&
+              isSamePiece(boardMatrix[newRow][newCol], cell) &&
               !cellVisited.has(newPosKey)
             ) {
               queue.push({ row: newRow, col: newCol });
@@ -161,7 +185,7 @@ export const getPiecesInfo = (boardConfig: string[]): PiecesMap => {
     }
   }
 
-  // compute piece properties
+  // Rest of the function remains the same
   Object.values(pieces).forEach((piece) => {
     if (piece.isExit) return;
     const { positions } = piece;

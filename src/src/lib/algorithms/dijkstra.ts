@@ -20,7 +20,7 @@ interface SearchState {
  */
 const dijkstra = (initialBoard: string[][], initialPieces: PiecesMap): SolutionResult => {
   // Batasan maksimum biaya untuk mencegah loop tak terhingga
-  const MAX_COST = initialBoard.length * initialBoard[0].length * 5;
+  const MAX_COST = initialBoard.length * initialBoard[0].length * 25;
 
   // Catat waktu mulai untuk pengukuran kinerja
   const start = performance.now();

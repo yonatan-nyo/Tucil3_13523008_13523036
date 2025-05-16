@@ -25,8 +25,8 @@ interface Solution {
  */
 const ucs = (initialBoard: string[][], initialPieces: PiecesMap): SolutionResult => {
   // Definisikan batasan maksimum biaya untuk mencegah loop tak terhingga
-  // Dihitung berdasarkan ukuran papan (tinggi × lebar × 5)
-  const MAX_COST = initialBoard.length * initialBoard[0].length * 5;
+  // Dihitung berdasarkan ukuran papan (tinggi × lebar × 25)
+  const MAX_COST = initialBoard.length * initialBoard[0].length * 25;
 
   // Catat waktu mulai untuk menghitung durasi eksekusi
   const start = performance.now();
