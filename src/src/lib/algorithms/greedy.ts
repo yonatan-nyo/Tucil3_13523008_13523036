@@ -1,5 +1,15 @@
 import { applyMove, getBoardStateString, getValidMoves, isSolved } from "../helpers";
+import { PriorityQueue } from "../priorityQueue";
 import type { Move, PiecesMap, SolutionResult } from "../types";
+
+interface SearchState {
+  board: string[][];
+  pieces: PiecesMap;
+  stateString: string;
+  heuristic: number;
+  moves: Move[];
+  cost: number;
+}
 
 const greedy = (initialBoard: string[][], initialPieces: PiecesMap, heuristicFunc: (board: string[][], pieces: PiecesMap) => number): SolutionResult => {
   // Define a maximum cost to prevent infinite loops
@@ -7,19 +17,14 @@ const greedy = (initialBoard: string[][], initialPieces: PiecesMap, heuristicFun
 
   const start = performance.now();
   const visitedStates = new Set<string>();
-  const openList: Array<{
-    board: string[][];
-    pieces: PiecesMap;
-    stateString: string;
-    heuristic: number;
-    moves: Move[];
-    cost: number; // Add cost tracking
-  }> = [];
+
+  const openList = new PriorityQueue<SearchState>((a, b) => a.heuristic - b.heuristic);
+
   let nodesVisited = 0;
   let bestHeuristic = Infinity;
   let plateauCounter = 0;
 
-  const initialState = {
+  const initialState: SearchState = {
     board: initialBoard,
     pieces: initialPieces,
     stateString: getBoardStateString(initialBoard),
@@ -31,17 +36,14 @@ const greedy = (initialBoard: string[][], initialPieces: PiecesMap, heuristicFun
   openList.push(initialState);
   bestHeuristic = initialState.heuristic;
 
-  while (openList.length > 0) {
+  while (!openList.isEmpty()) {
     nodesVisited++;
 
-    // Logger: Print current node info
-    if (nodesVisited % 1000 === 0) {
-      console.log(`[Greedy] Node #${nodesVisited} | OpenList: ${openList.length} | Heuristic: ${openList[0].heuristic} | Best: ${bestHeuristic} | Plateau: ${plateauCounter}`);
-    }
+    // Get the state with the lowest heuristic value
+    const currentState = openList.pop()!;
 
-    // Sort by heuristic value
-    openList.sort((a, b) => a.heuristic - b.heuristic);
-    const currentState = openList.shift()!;
+    // Skip if already visited
+    if (visitedStates.has(currentState.stateString)) continue;
     visitedStates.add(currentState.stateString);
 
     // Check if solved
@@ -67,11 +69,22 @@ const greedy = (initialBoard: string[][], initialPieces: PiecesMap, heuristicFun
     } else {
       plateauCounter++;
 
-      // If stuck on a plateau for too long, occasionally explore less promising nodes
-      // This helps greedy search avoid getting stuck in local minima
+      // If stuck on a plateau for too long, occasionally make a random move
       if (plateauCounter > 50 && plateauCounter % 10 === 0) {
-        // Introduce randomness by not always picking the best heuristic
-        openList.sort(() => Math.random() - 0.5);
+        // Create a temporary array for random exploration
+        const tempList: SearchState[] = [];
+        while (!openList.isEmpty() && tempList.length < 100) {
+          tempList.push(openList.pop()!);
+        }
+
+        // Shuffle the temporary list
+        tempList.sort(() => Math.random() - 0.5);
+
+        // Push items back to queue
+        tempList.forEach((state) => openList.push(state));
+
+        // Skip to next iteration
+        continue;
       }
     }
 
@@ -83,26 +96,22 @@ const greedy = (initialBoard: string[][], initialPieces: PiecesMap, heuristicFun
 
       if (visitedStates.has(newStateString)) continue;
 
-      const newState = {
-        board: newBoard,
-        pieces: newPieces,
-        stateString: newStateString,
-        heuristic: heuristicFunc(newBoard, newPieces),
-        moves: [...currentState.moves, move],
-        cost: currentState.cost + 1, // Increment cost for each move
-      };
+      const newHeuristic = heuristicFunc(newBoard, newPieces);
+      const newCost = currentState.cost + 1;
 
       // Only add if we haven't exceeded the maximum cost
-      if (newState.cost <= MAX_COST) {
+      if (newCost <= MAX_COST) {
+        const newState: SearchState = {
+          board: newBoard,
+          pieces: newPieces,
+          stateString: newStateString,
+          heuristic: newHeuristic,
+          moves: [...currentState.moves, move],
+          cost: newCost,
+        };
+
         openList.push(newState);
       }
-    }
-
-    // Safety mechanism: if the open list gets too large, trim it
-    // This prevents memory issues in complex puzzles
-    if (openList.length > 10000) {
-      openList.sort((a, b) => a.heuristic - b.heuristic);
-      openList.splice(1000); // Keep only the 1000 most promising states
     }
   }
 

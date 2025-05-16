@@ -1,5 +1,16 @@
 import { applyMove, getBoardStateString, getValidMoves, isSolved } from "../helpers";
+import { PriorityQueue } from "../priorityQueue";
 import type { Move, PiecesMap, SolutionResult } from "../types";
+
+interface SearchState {
+  board: string[][];
+  pieces: PiecesMap;
+  stateString: string;
+  cost: number;
+  heuristic: number;
+  f: number;
+  moves: Move[];
+}
 
 const astar = (initialBoard: string[][], initialPieces: PiecesMap, heuristicFunc: (board: string[][], pieces: PiecesMap) => number): SolutionResult => {
   // Define a maximum cost based on board dimensions
@@ -7,18 +18,12 @@ const astar = (initialBoard: string[][], initialPieces: PiecesMap, heuristicFunc
 
   const start = performance.now();
   const visitedStates = new Set<string>();
-  const openList: Array<{
-    board: string[][];
-    pieces: PiecesMap;
-    stateString: string;
-    cost: number;
-    heuristic: number;
-    f: number;
-    moves: Move[];
-  }> = [];
+
+  const openList = new PriorityQueue<SearchState>((a, b) => a.f - b.f);
+
   let nodesVisited = 0;
 
-  const initialState = {
+  const initialState: SearchState = {
     board: initialBoard,
     pieces: initialPieces,
     stateString: getBoardStateString(initialBoard),
@@ -30,10 +35,9 @@ const astar = (initialBoard: string[][], initialPieces: PiecesMap, heuristicFunc
 
   openList.push(initialState);
 
-  while (openList.length > 0) {
+  while (!openList.isEmpty()) {
     nodesVisited++;
-    openList.sort((a, b) => a.f - b.f);
-    const currentState = openList.shift()!;
+    const currentState = openList.pop()!;
 
     // Skip already visited states
     if (visitedStates.has(currentState.stateString)) continue;
@@ -68,7 +72,7 @@ const astar = (initialBoard: string[][], initialPieces: PiecesMap, heuristicFunc
       // Skip if we'll exceed the maximum cost
       if (newCost > MAX_COST) continue;
 
-      const newState = {
+      const newState: SearchState = {
         board: newBoard,
         pieces: newPieces,
         stateString: newStateString,
@@ -79,32 +83,6 @@ const astar = (initialBoard: string[][], initialPieces: PiecesMap, heuristicFunc
       };
 
       openList.push(newState);
-    }
-
-    // Limit search space by node count for safety
-    if (nodesVisited > 100000) {
-      const end = performance.now();
-      return {
-        solved: false,
-        moves: [],
-        nodesVisited,
-        executionTime: end - start,
-      };
-    }
-
-    // Add periodic time check to prevent very long runs
-    if (nodesVisited % 10000 === 0) {
-      const currentTime = performance.now();
-      if (currentTime - start > 30000) {
-        // 30 second timeout
-        const end = performance.now();
-        return {
-          solved: false,
-          moves: [],
-          nodesVisited,
-          executionTime: end - start,
-        };
-      }
     }
   }
 
