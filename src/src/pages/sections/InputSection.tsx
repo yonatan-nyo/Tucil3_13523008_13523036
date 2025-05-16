@@ -75,6 +75,7 @@ const InputSection = ({
             <option value="greedy">Greedy Best First Search</option>
             <option value="ucs">Uniform Cost Search (UCS)</option>
             <option value="astar">A* Search</option>
+            <option value="dijkstra">Dijkstra's Algorithm</option>
           </select>
           <p className="mt-2 text-sm opacity-75">
             {algorithm === "greedy"
@@ -86,7 +87,7 @@ const InputSection = ({
         </div>
 
         {/* Heuristic Selection (for Greedy and A*) */}
-        {algorithm !== "ucs" && (
+        {algorithm !== "ucs" && algorithm !== "dijkstra" && (
           <div className={`p-4 rounded-lg ${isDarkMode ? "bg-gray-700" : "bg-gray-50"}`}>
             <label className="block text-sm font-medium mb-2">Heuristic</label>
             <select

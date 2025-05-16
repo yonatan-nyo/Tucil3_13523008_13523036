@@ -108,6 +108,8 @@ export default function RushHourGame() {
           result = algorithms.ucs(board, pieces);
         } else if (algorithm === "astar") {
           result = algorithms.astar(board, pieces, heuristics[heuristic]);
+        } else if (algorithm === "dijkstra") {
+          result = algorithms.dijkstra(board, pieces);
         } else {
           throw new Error("Invalid algorithm");
         }
