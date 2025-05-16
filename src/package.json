@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port 4000",
-    "build": "tsc -b && vite build --base /src/ --emptyOutDir --outDir ../bin",
+    "build": "tsc -b && vite build --base / --emptyOutDir --outDir ../bin",
     "lint": "eslint .",
     "preview": "vite preview"
   },
