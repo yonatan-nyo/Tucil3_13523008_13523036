@@ -1,7 +1,7 @@
 # Penyelesai Puzzle Rush Hour
 
 <div align="center">
-  <img src="src/public/logo.png" alt="Logo Rush Hour" width="200"/>
+  <img src="doc/app.png" alt="Aplikasi solver" width="700"/>
   <h3>Penyelesai Puzzle menggunakan Algoritma Pencarian</h3>
   <p>Tugas Kecil 3 IF2211 Strategi Algoritma</p>
 </div>
