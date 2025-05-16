@@ -46,6 +46,12 @@ export default function RushHourGame() {
     setStats(null);
     setCurrentStep(-1);
     stopAnimation();
+    setBoard([]);
+    setPieces({});
+    setDisplayBoard([]);
+    setBoardConfig(null);
+    setAlgorithm("greedy");
+    setHeuristic("manhattan");
 
     const reader = new FileReader();
     reader.onload = (event) => {
