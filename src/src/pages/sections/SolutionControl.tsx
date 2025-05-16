@@ -12,6 +12,7 @@ const SolutionControl = ({
   applyStepMove,
   currentStep,
   solution,
+  saveSolution,
 }: {
   isDarkMode: boolean;
   playSpeed: number;
@@ -23,6 +24,7 @@ const SolutionControl = ({
   applyStepMove: (step: number) => void;
   currentStep: number;
   solution: SolutionResult;
+  saveSolution: () => void;
 }) => {
   return (
     <div className="w-full md:w-auto">
@@ -90,6 +92,20 @@ const SolutionControl = ({
           </div>
         </div>
       </div>
+
+      {/* Added Save Solution button */}
+      {saveSolution && (
+        <button
+          onClick={saveSolution}
+          className={`px-3 py-2 ${
+            isDarkMode ? "bg-purple-600 hover:bg-purple-700" : "bg-purple-500 hover:bg-purple-600"
+          } text-white rounded-md text-sm font-medium w-full transition-colors shadow-sm flex items-center justify-center gap-1 mt-2`}>
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Simpan Solusi ke File
+        </button>
+      )}
 
       <div className="mt-4 text-sm">
         <div className="flex items-center mb-1">

@@ -263,6 +263,39 @@ export default function RushHourGame() {
     setIsDarkMode(!isDarkMode);
   };
 
+  const saveSolution = () => {
+    if (!solution || !board.length) return;
+
+    let outputText = "Papan Awal\n";
+    const initialBoardString = board.map((row) => row.join("")).join("\n");
+    outputText += initialBoardString + "\n\n\n";
+
+    let currentBoard = deepCopy(board);
+    let currentPieces = { ...pieces };
+
+    solution.moves.forEach((move, idx) => {
+      const result = applyMove(currentBoard, currentPieces, move);
+      currentBoard = result.board;
+      currentPieces = result.pieces;
+
+      outputText += `Gerakan ${idx + 1}: ${move.piece}-${move.direction}\n`;
+
+      const boardString = currentBoard.map((row) => row.join("")).join("\n");
+      outputText += boardString + "\n\n\n";
+    });
+
+    // Create and download the file
+    const blob = new Blob([outputText], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "rush_hour_solution.txt";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className={`min-h-screen ${isDarkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-900"} transition-colors duration-300`}>
       <div className="container mx-auto px-4 py-8">
@@ -302,11 +335,13 @@ export default function RushHourGame() {
         {/* Game Board and Controls */}
         {displayBoard.length > 0 && (
           <div className={`mb-8 ${isDarkMode ? "bg-gray-800" : "bg-white"} p-6 rounded-xl shadow-md transition-colors duration-300`}>
-            <h2 className="text-xl font-bold mb-4 flex items-center">
-              <div className={`w-8 h-8 rounded-full ${isDarkMode ? "bg-blue-600" : "bg-blue-500"} flex items-center justify-center mr-2`}>
-                <span className="text-white">2</span>
+            <h2 className="text-xl font-bold mb-4 flex items-center justify-between">
+              <div className="flex items-center">
+                <div className={`w-8 h-8 rounded-full ${isDarkMode ? "bg-blue-600" : "bg-blue-500"} flex items-center justify-center mr-2`}>
+                  <span className="text-white">2</span>
+                </div>
+                Game Board
               </div>
-              Game Board
             </h2>
 
             <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
@@ -338,6 +373,7 @@ export default function RushHourGame() {
                   applyStepMove={applyStepMove}
                   currentStep={currentStep}
                   solution={solution}
+                  saveSolution={saveSolution}
                 />
               )}
             </div>
