@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import Layout from "./components/Layout";
 
