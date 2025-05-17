@@ -1,4 +1,4 @@
-# Penyelesai Puzzle Rush Hour
+# Penyelesaian Puzzle Rush Hour
 
 <div align="center">
   <img src="doc/app.png" alt="Aplikasi solver" width="700"/>
