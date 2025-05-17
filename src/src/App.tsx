@@ -6,7 +6,12 @@ const router = createBrowserRouter([
     path: "/",
     Component: lazy(() => import("./pages/Home")),
   },
+  {
+    path: "/about",
+    Component: lazy(() => import("./pages/About")),
+  },
 ]);
+
 function App() {
   return <RouterProvider router={router} />;
 }

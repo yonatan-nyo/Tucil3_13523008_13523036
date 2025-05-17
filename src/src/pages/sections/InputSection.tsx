@@ -82,7 +82,10 @@ const InputSection = ({
               ? "Optimizes for quick solutions using heuristics"
               : algorithm === "ucs"
               ? "Finds the shortest path by exploring all options"
-              : "Combines UCS with heuristics for efficient pathfinding"}
+              : algorithm === "dijkstra"
+              ? "Finds the shortest path in weighted graphs"
+              :  "Combines heuristics with path cost for efficiency"
+              }
           </p>
         </div>
 

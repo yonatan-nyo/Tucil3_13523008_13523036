@@ -19,10 +19,14 @@ interface SearchState {
  * @param initialPieces Informasi kendaraan awal pada papan
  * @param heuristicFunc Fungsi heuristik yang digunakan untuk menilai jarak ke solusi
  */
-const greedy = (initialBoard: string[][], initialPieces: PiecesMap, heuristicFunc: (board: string[][], pieces: PiecesMap) => number): SolutionResult => {
+const greedy = (
+  initialBoard: string[][],
+  initialPieces: PiecesMap,
+  heuristicFunc: (board: string[][], pieces: PiecesMap) => number
+): SolutionResult => {
   // Definisikan batasan maksimum biaya untuk mencegah loop tak terhingga
   // Dihitung berdasarkan ukuran papan (tinggi × lebar × 25)
-  const MAX_COST = initialBoard.length * initialBoard[0].length * 25;
+  const MAX_COST = initialBoard.length * initialBoard[0].length * 35;
 
   // Catat waktu mulai untuk menghitung durasi eksekusi
   const start = performance.now();
