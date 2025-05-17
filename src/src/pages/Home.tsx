@@ -84,6 +84,8 @@ export default function RushHourGame() {
     };
 
     reader.readAsText(file);
+
+    e.target.value = "";
   };
 
   const solvePuzzle = () => {
@@ -299,7 +301,10 @@ export default function RushHourGame() {
 
   return (
     <Layout>
-      <div className={`min-h-screen ${isDarkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-900"} transition-colors duration-300`}>
+      <div
+        className={`min-h-screen ${
+          isDarkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-900"
+        } transition-colors duration-300`}>
         <div className="container mx-auto px-4 py-8">
           <HomeHead isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
 
@@ -328,6 +333,7 @@ export default function RushHourGame() {
               isLoading={isLoading}
               resetBoard={resetBoard}
               error={error}
+              setError={setError}
               stats={stats}
               isDarkMode={isDarkMode}
               handleFileUpload={handleFileUpload}
@@ -336,10 +342,16 @@ export default function RushHourGame() {
 
           {/* Game Board and Controls */}
           {displayBoard.length > 0 && (
-            <div className={`mb-8 ${isDarkMode ? "bg-gray-800" : "bg-white"} p-6 rounded-xl shadow-md transition-colors duration-300`}>
+            <div
+              className={`mb-8 ${
+                isDarkMode ? "bg-gray-800" : "bg-white"
+              } p-6 rounded-xl shadow-md transition-colors duration-300`}>
               <h2 className="text-xl font-bold mb-4 flex items-center justify-between">
                 <div className="flex items-center">
-                  <div className={`w-8 h-8 rounded-full ${isDarkMode ? "bg-blue-600" : "bg-blue-500"} flex items-center justify-center mr-2`}>
+                  <div
+                    className={`w-8 h-8 rounded-full ${
+                      isDarkMode ? "bg-blue-600" : "bg-blue-500"
+                    } flex items-center justify-center mr-2`}>
                     <span className="text-white">2</span>
                   </div>
                   Game Board
@@ -354,7 +366,9 @@ export default function RushHourGame() {
                       {row.map((cell, colIdx) => (
                         <div
                           key={`cell-${rowIdx}-${colIdx}`}
-                          className={`w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center m-0.5 rounded-md text-lg font-bold ${getCellStyle(cell)} transition-all duration-300`}>
+                          className={`w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center m-0.5 rounded-md text-lg font-bold ${getCellStyle(
+                            cell
+                          )} transition-all duration-300`}>
                           {cell !== "." ? cell : ""}
                         </div>
                       ))}
@@ -386,7 +400,10 @@ export default function RushHourGame() {
           {solution && solution.moves.length > 0 && (
             <div className={`${isDarkMode ? "bg-gray-800" : "bg-white"} p-6 rounded-xl shadow-md transition-colors duration-300`}>
               <h2 className="text-xl font-bold mb-4 flex items-center">
-                <div className={`w-8 h-8 rounded-full ${isDarkMode ? "bg-blue-600" : "bg-blue-500"} flex items-center justify-center mr-2`}>
+                <div
+                  className={`w-8 h-8 rounded-full ${
+                    isDarkMode ? "bg-blue-600" : "bg-blue-500"
+                  } flex items-center justify-center mr-2`}>
                   <span className="text-white">3</span>
                 </div>
                 Solution Steps
@@ -397,7 +414,13 @@ export default function RushHourGame() {
                   key="initial"
                   onClick={() => applyStepMove(-1)}
                   className={`cursor-pointer p-3 rounded-lg ${
-                    currentStep === -1 ? (isDarkMode ? "bg-blue-900/40 border-blue-700" : "bg-blue-100 border-blue-300") : isDarkMode ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-50 hover:bg-gray-100"
+                    currentStep === -1
+                      ? isDarkMode
+                        ? "bg-blue-900/40 border-blue-700"
+                        : "bg-blue-100 border-blue-300"
+                      : isDarkMode
+                      ? "bg-gray-700 hover:bg-gray-600"
+                      : "bg-gray-50 hover:bg-gray-100"
                   } border transition-colors`}>
                   <div className="font-bold">Initial Board</div>
                   <div className="text-sm opacity-75">Starting position</div>
@@ -426,8 +449,6 @@ export default function RushHourGame() {
               </div>
             </div>
           )}
-
-          
         </div>
       </div>
     </Layout>
