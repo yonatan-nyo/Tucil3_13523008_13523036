@@ -47,11 +47,45 @@ export const parseInputFile = (content: string): BoardConfig => {
     throw new Error(`Expected ${height} rows in boardConfig, got ${boardConfig.length}.`);
   }
   boardConfig.forEach((row, idx) => {
-    if (isKOnTheLeft) {
+    console.log(isKOnTheLeft, isKOnTheTop, isKOnTheRight, isKOnTheBottom);
+    if (isKOnTheLeft && isKOnTheTop) {
       if (!row.includes("K")) {
         if (row.length !== width) {
           throw new Error(`Each row without K must have exactly ${width} columns.`);
         }
+      }
+    }
+    else if (isKOnTheLeft && isKOnTheBottom) {
+      if (!row.includes("K")) {
+        if (row.length !== width) {
+          throw new Error(`Each row without K must have exactly ${width} columns.`);
+        }
+      }
+    }
+    else if (isKOnTheRight && isKOnTheTop) {
+      if (!row.includes("K")) {
+        if (row.length !== width) {
+          throw new Error(`Each row without K must have exactly ${width} columns.`);
+        }
+      }
+    }
+    else if (isKOnTheRight && isKOnTheBottom) {
+      if (!row.includes("K")) {
+        if (row.length !== width) {
+          throw new Error(`Each row without K must have exactly ${width} columns.`);
+        }
+      }
+    }
+    else if (isKOnTheRight && isKOnTheBottom) {
+      if (!row.includes("K")) {
+        if (row.length !== width) {
+          throw new Error(`Each row without K must have exactly ${width} columns.`);
+        }
+      }
+    }
+    else if (isKOnTheLeft) {
+      if (row.length !== width + 1) {
+        throw new Error(`Each row must have ${width + 1} columns.`);
       }
     } else if (isKOnTheRight) {
       if (row.includes("K")) {
