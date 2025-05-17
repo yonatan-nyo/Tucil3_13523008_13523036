@@ -48,8 +48,10 @@ export const parseInputFile = (content: string): BoardConfig => {
   }
   boardConfig.forEach((row, idx) => {
     if (isKOnTheLeft) {
-      if (row.length !== width + 1) {
-        throw new Error(`Each row must have ${width + 1} columns.`);
+      if (!row.includes("K")) {
+        if (row.length !== width) {
+          throw new Error(`Each row without K must have exactly ${width} columns.`);
+        }
       }
     } else if (isKOnTheRight) {
       if (row.includes("K")) {
@@ -77,6 +79,28 @@ export const parseInputFile = (content: string): BoardConfig => {
       throw new Error(`Unknown K location.`);
     }
   });
+  let primaryPieceCol = -1;
+  for (let i = 0; i < boardConfig.length; i++) {
+    const pIndex = boardConfig[i].indexOf("P");
+    if (pIndex !== -1) {
+      primaryPieceCol = pIndex;
+      break;
+    }
+  }
+
+  if (primaryPieceCol === -1) {
+    throw new Error("Primary piece (P) not found on the board.");
+  }
+
+  if (isKOnTheBottom || isKOnTheTop) {
+    const kRow = isKOnTheBottom ? height : 0;
+    const bottomRow = boardConfig[kRow];
+    const kIndex = bottomRow.indexOf("K");
+
+    if (kIndex !== primaryPieceCol) {
+      throw new Error("Exit (K) must be aligned with the primary piece (P).");
+    }
+  }
   const uniquePieceSymbols = new Set<string>();
   boardConfig.forEach((row) => {
     for (const char of row) {
