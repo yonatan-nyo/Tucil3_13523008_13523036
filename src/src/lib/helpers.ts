@@ -77,6 +77,21 @@ export const parseInputFile = (content: string): BoardConfig => {
       throw new Error(`Unknown K location.`);
     }
   });
+  const uniquePieceSymbols = new Set<string>();
+  boardConfig.forEach((row) => {
+    for (const char of row) {
+      if (char !== "." && char !== " " && char !== "K" && char !== "P") {
+        uniquePieceSymbols.add(char);
+      }
+    }
+  });
+
+  const actualPieceCount = uniquePieceSymbols.size;
+  if (actualPieceCount !== N) {
+    throw new Error(
+      `Mismatch in piece count: Input specifies ${N} pieces, but ${actualPieceCount} unique pieces found on board.`
+    );
+  }
 
   return {
     dimensions: { A: width, B: height },
@@ -92,24 +107,24 @@ export const getPiecesInfo = (boardConfig: string[]): PiecesMap => {
   const visited = new Set<string>();
   const usedSymbols = new Set<string>();
   let pieceCount = 0;
-  
+
   const MAX_PIECES = 24;
 
   // Helper function to check if a cell should be ignored
-  const isIgnoredCell = (cell: string) => cell === '.' || cell === ' ';
-  
+  const isIgnoredCell = (cell: string) => cell === "." || cell === " ";
+
   // Helper function to check if two cells should be considered part of the same piece
   const isSamePiece = (cell1: string, cell2: string) => {
     // If either cell is to be ignored, they're not the same piece
     if (isIgnoredCell(cell1) || isIgnoredCell(cell2)) return false;
-    
+
     // Only compare alphabetic characters
     const isAlphaChar = (char: string) => /^[A-Za-z]$/.test(char);
-    
+
     if (isAlphaChar(cell1) && isAlphaChar(cell2)) {
       return cell1 === cell2;
     }
-    
+
     return false;
   };
 
@@ -120,7 +135,7 @@ export const getPiecesInfo = (boardConfig: string[]): PiecesMap => {
       const posKey = `${i},${j}`;
 
       if (visited.has(posKey)) continue;
-      
+
       // Skip periods and spaces
       if (isIgnoredCell(cell)) {
         visited.add(posKey);
@@ -177,7 +192,6 @@ export const getPiecesInfo = (boardConfig: string[]): PiecesMap => {
         };
         usedSymbols.add(cell);
         pieceCount++;
-        
       } else if (cell === "K") {
         pieces["K"] = { positions: [{ row: i, col: j }], symbol: "K", isExit: true };
         visited.add(posKey);
@@ -201,14 +215,18 @@ export const getPiecesInfo = (boardConfig: string[]): PiecesMap => {
         positions.sort((a, b) => a.col - b.col);
         for (let i = 1; i < positions.length; i++) {
           if (positions[i].col !== positions[i - 1].col + 1) {
-            throw new Error(`Piece ${piece.symbol} has non-contiguous horizontal positions. Each piece must form a continuous line.`);
+            throw new Error(
+              `Piece ${piece.symbol} has non-contiguous horizontal positions. Each piece must form a continuous line.`
+            );
           }
         }
       } else {
         positions.sort((a, b) => a.row - b.row);
         for (let i = 1; i < positions.length; i++) {
           if (positions[i].row !== positions[i - 1].row + 1) {
-            throw new Error(`Piece ${piece.symbol} has non-contiguous vertical positions. Each piece must form a continuous line.`);
+            throw new Error(
+              `Piece ${piece.symbol} has non-contiguous vertical positions. Each piece must form a continuous line.`
+            );
           }
         }
       }
