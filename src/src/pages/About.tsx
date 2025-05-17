@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaGithub, FaLinkedin } from "react-icons/fa";
+import { Github, Linkedin } from "lucide-react";
 import Layout from "./components/Layout";
 
 export default function About() {
@@ -90,7 +90,7 @@ export default function About() {
                       className={`${
                         isDarkMode ? "text-gray-300 hover:text-gray-100" : "text-gray-600 hover:text-gray-900"
                       } transition-colors`}>
-                      <FaGithub size={24} />
+                      <Github size={24} />
                     </a>
                     <a
                       href={member.linkedin}
@@ -99,7 +99,7 @@ export default function About() {
                       className={`${
                         isDarkMode ? "text-gray-300 hover:text-gray-100" : "text-gray-600 hover:text-gray-900"
                       } transition-colors`}>
-                      <FaLinkedin size={24} />
+                      <Linkedin size={24} />
                     </a>
                   </div>
                 </div>
