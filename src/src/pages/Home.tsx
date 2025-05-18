@@ -290,7 +290,7 @@ export default function RushHourGame() {
       currentBoard = result.board;
       currentPieces = result.pieces;
 
-      outputText += `Gerakan ${idx + 1}: ${move.piece}-${move.direction}-${move.steps} steps\n`;
+      outputText += `Gerakan ${idx + 1}: ${move.piece}-${move.direction}\n`;
 
       const boardString = currentBoard.map((row) => row.join("")).join("\n");
       outputText += boardString + "\n\n\n";
