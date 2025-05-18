@@ -113,7 +113,7 @@ const ucs = (initialBoard: string[][], initialPieces: PiecesMap): SolutionResult
         board: result.board,
         pieces: result.pieces,
         stateString: newStateString,
-        cost: currentState.cost + move.steps, // Cost increases by number of steps
+        cost: currentState.cost + 1, // Cost increases by 1
         moves: [...currentState.moves, move], // Tambahkan langkah baru ke daftar langkah
       };
 

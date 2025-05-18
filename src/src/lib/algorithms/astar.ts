@@ -95,7 +95,7 @@ const astar = (initialBoard: string[][], initialPieces: PiecesMap, heuristicFunc
 
       // Hitung nilai heuristik dan biaya baru
       const newHeuristic = heuristicFunc(newBoard, newPieces);
-      const newCost = currentState.cost + move.steps; // Biaya bertambah berdasarkan jumlah langkah
+      const newCost = currentState.cost + 1; // Biaya bertambah 1
 
       // Lewati jika melebihi batas maksimum biaya
       if (newCost > MAX_COST) continue;

@@ -94,7 +94,7 @@ const greedy = (initialBoard: string[][], initialPieces: PiecesMap, heuristicFun
 
       // Hitung nilai heuristik dan biaya baru
       const newHeuristic = heuristicFunc(newBoard, newPieces);
-      const newCost = currentState.cost + move.steps;
+      const newCost = currentState.cost + 1;
 
       // Tambahkan ke antrean hanya jika biaya tidak melebihi batas maksimum
       if (newCost <= MAX_COST) {

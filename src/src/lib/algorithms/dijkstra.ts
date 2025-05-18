@@ -92,7 +92,7 @@ const dijkstra = (initialBoard: string[][], initialPieces: PiecesMap): SolutionR
       const newStateString = getBoardStateString(newBoard);
 
       // Hitung biaya baru untuk mencapai state ini
-      const newCost = currentState.cost + move.steps;
+      const newCost = currentState.cost + 1;
 
       // Jika ditemukan jalur yang lebih pendek atau state baru belum dikunjungi
       if (newCost < (distanceMap.get(newStateString) || Infinity)) {
