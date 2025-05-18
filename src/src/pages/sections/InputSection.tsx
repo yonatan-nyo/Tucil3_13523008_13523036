@@ -37,7 +37,8 @@ const InputSection = ({
   return (
     <div className={`mb-8 ${isDarkMode ? "bg-gray-800" : "bg-white"} p-6 rounded-xl shadow-md transition-colors duration-300`}>
       <h2 className="text-xl font-bold mb-4 flex items-center">
-        <div className={`w-8 h-8 rounded-full ${isDarkMode ? "bg-blue-600" : "bg-blue-500"} flex items-center justify-center mr-2`}>
+        <div
+          className={`w-8 h-8 rounded-full ${isDarkMode ? "bg-blue-600" : "bg-blue-500"} flex items-center justify-center mr-2`}>
           <span className="text-white">1</span>
         </div>
         Configure Solver
@@ -48,7 +49,10 @@ const InputSection = ({
         <div className={`p-4 rounded-lg ${isDarkMode ? "bg-gray-700" : "bg-gray-50"}`}>
           <label className="block text-sm font-medium mb-2">Board Configuration</label>
           <div className="flex items-center">
-            <label className={`cursor-pointer ${isDarkMode ? "bg-blue-600 hover:bg-blue-700" : "bg-blue-500 hover:bg-blue-600"} text-white py-2 px-4 rounded-md flex items-center transition-colors`}>
+            <label
+              className={`cursor-pointer ${
+                isDarkMode ? "bg-blue-600 hover:bg-blue-700" : "bg-blue-500 hover:bg-blue-600"
+              } text-white py-2 px-4 rounded-md flex items-center transition-colors`}>
               <Upload size={16} className="mr-2" />
               Upload File
               <input
@@ -82,11 +86,14 @@ const InputSection = ({
           <select
             value={algorithm}
             onChange={(e) => setAlgorithm(e.target.value as Algorithm)}
-            className={`w-full border ${isDarkMode ? "bg-gray-800 border-gray-600 text-white" : "bg-white border-gray-300"} rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500`}>
+            className={`w-full border ${
+              isDarkMode ? "bg-gray-800 border-gray-600 text-white" : "bg-white border-gray-300"
+            } rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500`}>
             <option value="greedy">Greedy Best First Search</option>
             <option value="ucs">Uniform Cost Search (UCS)</option>
             <option value="astar">A* Search</option>
             <option value="dijkstra">Dijkstra's Algorithm</option>
+            <option value="fringe">Fringe Search</option>
           </select>
           <p className="mt-2 text-sm opacity-75">
             {algorithm === "greedy"
@@ -95,7 +102,9 @@ const InputSection = ({
               ? "Finds the shortest path by exploring all options"
               : algorithm === "dijkstra"
               ? "Finds the shortest path in weighted graphs"
-              : "Combines heuristics with path cost for efficiency"}
+              : algorithm === "astar"
+              ? "Combines heuristics with path cost for efficiency"
+              : "Fringe Search"}
           </p>
         </div>
 
@@ -158,7 +167,10 @@ const InputSection = ({
       </div>
 
       {error && (
-        <div className={`mt-4 ${isDarkMode ? "bg-red-900/30" : "bg-red-50"} border ${isDarkMode ? "border-red-800" : "border-red-200"} text-red-600 p-3 rounded-md`}>
+        <div
+          className={`mt-4 ${isDarkMode ? "bg-red-900/30" : "bg-red-50"} border ${
+            isDarkMode ? "border-red-800" : "border-red-200"
+          } text-red-600 p-3 rounded-md`}>
           <p className="font-medium">Error</p>
           <p>{error}</p>
         </div>

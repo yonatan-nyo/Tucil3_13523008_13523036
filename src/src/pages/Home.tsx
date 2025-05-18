@@ -117,6 +117,8 @@ export default function RushHourGame() {
           result = algorithms.astar(board, pieces, heuristics[heuristic]);
         } else if (algorithm === "dijkstra") {
           result = algorithms.dijkstra(board, pieces);
+        } else if (algorithm === "fringe") {
+          result = algorithms.fringe(board, pieces, heuristics[heuristic]);
         } else {
           throw new Error("Invalid algorithm");
         }

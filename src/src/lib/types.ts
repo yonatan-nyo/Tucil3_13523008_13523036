@@ -46,5 +46,5 @@ export interface Stats {
   moves: number;
 }
 
-export type Algorithm = "greedy" | "ucs" | "astar" | "dijkstra";
+export type Algorithm = "greedy" | "ucs" | "astar" | "dijkstra" | "fringe";
 export type Heuristic = "manhattan" | "blockingVehicles" | "combined";
