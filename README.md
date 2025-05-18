@@ -8,9 +8,9 @@
 
 ## 🔍 Gambaran Umum
 
-Penyelesai Puzzle Rush Hour adalah aplikasi web yang menyelesaikan permainan puzzle Rush Hour klasik menggunakan berbagai algoritma pencarian. Puzzle terdiri dari grid dengan kendaraan berbagai ukuran. Tujuannya adalah memindahkan mobil merah (kendaraan target) ke pintu keluar dengan menggeser kendaraan lain agar tidak menghalangi jalan.
+Penyelesaian Puzzle Rush Hour adalah aplikasi web yang menyelesaikan permainan puzzle Rush Hour klasik menggunakan berbagai algoritma pencarian. Puzzle terdiri dari grid dengan kendaraan berbagai ukuran. Tujuannya adalah memindahkan mobil merah (kendaraan target) ke pintu keluar dengan menggeser kendaraan lain agar tidak menghalangi jalan.
 
-Aplikasi ini dikembangkan sebagai bagian dari tugas mata kuliah Strategi Algoritma di Institut Teknologi Bandung.
+Aplikasi ini dikembangkan sebagai bagian dari tugas kecil mata kuliah Strategi Algoritma di Institut Teknologi Bandung.
 
 ## ✨ Fitur-Fitur
 
@@ -20,10 +20,15 @@ Aplikasi ini dikembangkan sebagai bagian dari tugas mata kuliah Strategi Algorit
   - A\* Search
   - Uniform Cost Search (UCS)
   - Algoritma Dijkstra
+  - Fringe Search
 - Berbagai fungsi heuristik
+  - Manhattan Distance
+  - Blocking Vehicles
+  - Combined (weighted combination)
 - Pemutaran solusi langkah demi langkah
 - Statistik kinerja (waktu eksekusi, jumlah simpul yang dikunjungi)
 - Unggah file untuk puzzle kustom
+- Ekspor solusi ke file teks
 - Mode Gelap/Terang
 
 ## 🧠 Algoritma
@@ -46,6 +51,25 @@ Aplikasi ini dikembangkan sebagai bagian dari tugas mata kuliah Strategi Algorit
 4. **Algoritma Dijkstra**
    - Mirip dengan UCS tetapi menggunakan pendekatan berbeda untuk melacak simpul yang dikunjungi
    - Menemukan jalur terpendek dengan memprioritaskan simpul dengan biaya terendah
+
+5. **Fringe Search**
+   - Menggabungkan efisiensi memori dari iterative deepening dengan strategi pencarian A*
+   - Menggunakan struktur dua daftar ("now" dan "later") untuk efisiensi
+   - Bekerja efektif dengan heuristik yang admissible
+
+## 🔢 Fungsi Heuristik
+
+1. **Manhattan Distance**
+   - Mengukur jarak terpendek dari posisi saat ini ke tujuan tanpa memperhitungkan hambatan
+   - Konsisten dan admissible, menjamin solusi optimal dengan A* dan Fringe Search
+
+2. **Blocking Vehicles**
+   - Menghitung jumlah kendaraan yang menghalangi jalur langsung ke tujuan
+   - Lebih informatif untuk kondisi tertentu tetapi bisa menjadi non-admissible
+
+3. **Combined**
+   - Kombinasi tertimbang antara Manhattan Distance dan Blocking Vehicles
+   - Dirancang untuk meningkatkan performa dengan menyeimbangkan kedua metrik
 
 ## 📦 Persyaratan
 
@@ -98,8 +122,8 @@ Build produksi dapat diakses di http://localhost:3000
 
 ### Memilih algoritma dan heuristik
 
-1. Pilih dari Greedy, A\*, UCS, atau Dijkstra
-2. Pilih fungsi heuristik (untuk A\* dan Greedy)
+1. Pilih dari Greedy, A*, UCS, Dijkstra, atau Fringe Search
+2. Pilih fungsi heuristik (untuk A\*, Greedy, dan Fringe Search)
 
 ### Menyelesaikan puzzle
 
@@ -111,6 +135,7 @@ Build produksi dapat diakses di http://localhost:3000
 1. Gunakan kontrol pemutaran untuk melihat solusi langkah demi langkah
 2. Sesuaikan kecepatan pemutaran menggunakan slider
 3. Lihat statistik tentang proses penyelesaian (waktu eksekusi, simpul yang dieksplorasi, panjang solusi)
+4. Simpan solusi ke file dengan tombol "Simpan Solusi ke File"
 
 ## 📁 Struktur Proyek
 
@@ -118,7 +143,7 @@ Build produksi dapat diakses di http://localhost:3000
 src/src/
 ├──── lib/
 │     ├── algorithms/        # Implementasi algoritma pencarian
-│     ├── helpers.ts         # Fungsi utilitas
+│     ├── helpers/           # Fungsi utilitas
 │     ├── heuristics.ts      # Fungsi heuristik
 │     ├── types.ts           # Definisi tipe TypeScript
 │     └── ...
