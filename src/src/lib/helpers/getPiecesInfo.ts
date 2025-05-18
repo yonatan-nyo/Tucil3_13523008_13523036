@@ -91,7 +91,6 @@ const getPiecesInfo = (boardConfig: string[]): PiecesMap => {
     }
   }
 
-  // Rest of the function remains the same
   Object.values(pieces).forEach((piece) => {
     if (piece.isExit) return;
     const { positions } = piece;

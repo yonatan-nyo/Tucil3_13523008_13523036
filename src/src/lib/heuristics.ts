@@ -1,4 +1,3 @@
-// Enhanced heuristic functions for Rush Hour puzzle
 import type { Heuristic, PiecesMap } from "./types";
 
 export const heuristics: Record<Heuristic, (board: string[][], pieces: PiecesMap) => number> = {
@@ -6,7 +5,7 @@ export const heuristics: Record<Heuristic, (board: string[][], pieces: PiecesMap
     const primaryPiece = Object.values(pieces).find((p) => p.isPrimary)!;
     const exitPos = pieces["K"].positions[0];
 
-    // For horizontal primary piece (common in Rush Hour)
+    // For horizontal primary piece 
     if (primaryPiece.orientation === "horizontal") {
       // If exit is on the left, use leftmost position of primary piece
       if (exitPos.col < primaryPiece.positions[0].col) {
@@ -46,7 +45,7 @@ export const heuristics: Record<Heuristic, (board: string[][], pieces: PiecesMap
         }
         return count;
       }
-      // Exit on the right side (original logic)
+      // Exit on the right side
       else {
         const rightmostCol = primaryPiece.positions[primaryPiece.positions.length - 1].col;
         let count = 0;
@@ -86,8 +85,6 @@ export const heuristics: Record<Heuristic, (board: string[][], pieces: PiecesMap
   },
 
   combined: (board, pieces) => {
-    // Using a weighted combination of both heuristics
-    // Increasing the weight of blocking vehicles which is more impactful
     return heuristics.manhattan(board, pieces) + 3 * heuristics.blockingVehicles(board, pieces);
   },
 };

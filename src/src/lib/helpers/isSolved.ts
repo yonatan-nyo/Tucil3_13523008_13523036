@@ -38,7 +38,6 @@ const isSolved = (pieces: PiecesMap): boolean => {
   }
 
   // Special case: If the primary piece is already at the exit position
-  // (This could happen in some puzzle variations)
   return primaryPiece.positions.some((pos) => pos.row === exitPos.row && pos.col === exitPos.col);
 };
 

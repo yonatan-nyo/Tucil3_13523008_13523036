@@ -1,4 +1,3 @@
-// --- Types ---
 export type Direction = "atas" | "bawah" | "kiri" | "kanan";
 
 export type PieceOrientation = "horizontal" | "vertical" | "unknown";

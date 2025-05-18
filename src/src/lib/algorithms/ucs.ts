@@ -5,7 +5,7 @@ import isSolved from "../helpers/isSolved";
 import { PriorityQueue } from "../priorityQueue";
 import type { Move, PiecesMap, SolutionResult } from "../types";
 
-// Antarmuka untuk status pencarian dalam algoritma UCS
+// status pencarian dalam algoritma UCS
 interface SearchState {
   board: string[][]; // Konfigurasi papan saat ini
   pieces: PiecesMap; // Informasi tentang semua kendaraan pada papan
@@ -14,7 +14,6 @@ interface SearchState {
   moves: Move[]; // Daftar langkah yang telah diambil untuk mencapai status ini
 }
 
-// Antarmuka untuk solusi optimal
 interface Solution {
   cost: number; // Biaya total solusi (jumlah langkah)
   moves: Move[]; // Daftar langkah untuk mencapai solusi
@@ -28,17 +27,14 @@ interface Solution {
  */
 const ucs = (initialBoard: string[][], initialPieces: PiecesMap): SolutionResult => {
   // Definisikan batasan maksimum biaya untuk mencegah loop tak terhingga
-  // Dihitung berdasarkan ukuran papan (tinggi × lebar × 25)
   const MAX_COST = initialBoard.length * initialBoard[0].length * 50;
 
-  // Catat waktu mulai untuk menghitung durasi eksekusi
   const start = performance.now();
 
   // Set untuk menyimpan status yang sudah dikunjungi
   const visitedStates = new Set<string>();
 
-  // Menggunakan priority queue untuk pemilihan status yang efisien
-  // Status dengan biaya terendah akan dipilih terlebih dahulu
+  // Menggunakan priority queue untuk pemilihan status yang efisien dengan status yang biaya terendah akan dipilih terlebih dahulu
   const openList = new PriorityQueue<SearchState>((a, b) => a.cost - b.cost);
 
   // Menghitung jumlah simpul yang dikunjungi
@@ -62,7 +58,6 @@ const ucs = (initialBoard: string[][], initialPieces: PiecesMap): SolutionResult
     moves: [], // Belum ada solusi ditemukan
   };
 
-  // Loop utama pencarian
   while (!openList.isEmpty()) {
     nodesVisited++;
 
@@ -73,7 +68,7 @@ const ucs = (initialBoard: string[][], initialPieces: PiecesMap): SolutionResult
     if (visitedStates.has(currentState.stateString)) continue;
     visitedStates.add(currentState.stateString);
 
-    // Periksa apakah status saat ini adalah solusi
+    // cek apakah status saat ini adalah solusi
     if (isSolved(currentState.pieces)) {
       // Perbarui solusi terbaik jika ini adalah solusi dengan biaya lebih rendah
       if (!bestSolution || currentState.cost < bestSolution.cost) {
@@ -93,7 +88,7 @@ const ucs = (initialBoard: string[][], initialPieces: PiecesMap): SolutionResult
       };
     }
 
-    // Lewati jika biaya sudah melebihi batas maksimum
+    // Lewati jika biaya sudah melebihi batas maksimum (skip infinite loop)
     if (currentState.cost > MAX_COST) continue;
 
     // Dapatkan semua langkah yang valid dari status saat ini
@@ -101,7 +96,6 @@ const ucs = (initialBoard: string[][], initialPieces: PiecesMap): SolutionResult
 
     // Iterasi melalui semua langkah yang mungkin
     for (const move of validMoves) {
-      // Terapkan langkah dan dapatkan status baru
       const result = applyMove(currentState.board, currentState.pieces, move);
       const newStateString = getBoardStateString(result.board);
 

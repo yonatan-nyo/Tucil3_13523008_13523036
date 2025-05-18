@@ -24,17 +24,14 @@ interface SearchState {
  */
 const greedy = (initialBoard: string[][], initialPieces: PiecesMap, heuristicFunc: (board: string[][], pieces: PiecesMap) => number): SolutionResult => {
   // Definisikan batasan maksimum biaya untuk mencegah loop tak terhingga
-  // Dihitung berdasarkan ukuran papan (tinggi × lebar × 25)
   const MAX_COST = initialBoard.length * initialBoard[0].length * 50;
 
-  // Catat waktu mulai untuk menghitung durasi eksekusi
   const start = performance.now();
 
   // Set untuk menyimpan status yang sudah dikunjungi
   const visitedStates = new Set<string>();
 
-  // Menggunakan priority queue untuk pemilihan status yang efisien
-  // Status dengan nilai heuristik terendah akan dipilih terlebih dahulu
+  // Menggunakan priority queue untuk pemilihan status yang efisien dengan status yang nilai heuristik terendah akan dipilih terlebih dahulu
   const openList = new PriorityQueue<SearchState>((a, b) => a.heuristic - b.heuristic);
 
   // Menghitung jumlah simpul yang dikunjungi
@@ -46,21 +43,20 @@ const greedy = (initialBoard: string[][], initialPieces: PiecesMap, heuristicFun
     pieces: initialPieces,
     stateString: getBoardStateString(initialBoard), // Mengkonversi board menjadi string unik
     heuristic: heuristicFunc(initialBoard, initialPieces), // Menghitung nilai heuristik awal
-    moves: [], // Belum ada langkah yang diambil
-    cost: 0, // Biaya awal adalah 0
+    moves: [], 
+    cost: 0,
   };
 
   // Masukkan status awal ke dalam antrean
   openList.push(initialState);
 
-  // Loop utama pencarian
   while (!openList.isEmpty()) {
     nodesVisited++;
 
     // Ambil status dengan nilai heuristik terendah
     const currentState = openList.pop()!;
 
-    // Lewati jika status ini sudah dikunjungi sebelumnya
+    // skip jika status ini sudah dikunjungi sebelumnya
     if (visitedStates.has(currentState.stateString)) continue;
     visitedStates.add(currentState.stateString);
 
@@ -75,7 +71,7 @@ const greedy = (initialBoard: string[][], initialPieces: PiecesMap, heuristicFun
       };
     }
 
-    // Lewati jika biaya sudah melebihi batas maksimum
+    // Lewati jika biaya sudah melebihi batas maksimum (skip infinite loop)
     if (currentState.cost > MAX_COST) {
       continue;
     }
@@ -85,7 +81,6 @@ const greedy = (initialBoard: string[][], initialPieces: PiecesMap, heuristicFun
 
     // Iterasi melalui semua langkah yang mungkin
     for (const move of validMoves) {
-      // Terapkan langkah dan dapatkan status baru
       const { board: newBoard, pieces: newPieces } = applyMove(currentState.board, currentState.pieces, move);
       const newStateString = getBoardStateString(newBoard);
 

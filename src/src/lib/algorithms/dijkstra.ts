@@ -25,18 +25,15 @@ const dijkstra = (initialBoard: string[][], initialPieces: PiecesMap): SolutionR
   // Batasan maksimum biaya untuk mencegah loop tak terhingga
   const MAX_COST = initialBoard.length * initialBoard[0].length * 50;
 
-  // Catat waktu mulai untuk pengukuran kinerja
   const start = performance.now();
 
   // Map untuk menyimpan biaya terendah yang diketahui untuk setiap state
-  // Berbeda dengan UCS yang menggunakan set sederhana untuk status yang dikunjungi
   const distanceMap = new Map<string, number>();
 
-  // Priority queue untuk menyimpan state yang akan dieksplorasi
-  // State dengan biaya terendah akan diproses terlebih dahulu
+  // Priority queue untuk menyimpan state yang akan dieksplorasi dan state dengan biaya terendah akan diproses terlebih dahulu
   const queue = new PriorityQueue<SearchState>((a, b) => a.cost - b.cost);
 
-  // Hitung jumlah node yang dikunjungi untuk statistik
+  // Hitung jumlah node yang dikunjungi
   let nodesVisited = 0;
 
   // Inisialisasi state awal
@@ -52,7 +49,6 @@ const dijkstra = (initialBoard: string[][], initialPieces: PiecesMap): SolutionR
   queue.push(initialState);
   distanceMap.set(initialState.stateString, 0);
 
-  // Loop pencarian utama - proses state hingga queue kosong
   while (!queue.isEmpty()) {
     nodesVisited++;
 
@@ -61,12 +57,11 @@ const dijkstra = (initialBoard: string[][], initialPieces: PiecesMap): SolutionR
     const currentStateString = currentState.stateString;
 
     // Jika biaya state ini lebih tinggi dari yang sudah diketahui, lewati
-    // Ini adalah optimasi kunci dalam algoritma Dijkstra
     if (currentState.cost > (distanceMap.get(currentStateString) || Infinity)) {
       continue;
     }
 
-    // Periksa apakah state ini adalah solusi
+    // cek solusi bukan
     if (isSolved(currentState.pieces)) {
       const end = performance.now();
       return {
@@ -77,12 +72,12 @@ const dijkstra = (initialBoard: string[][], initialPieces: PiecesMap): SolutionR
       };
     }
 
-    // Lewati jika biaya terlalu tinggi (batasan keamanan)
+    // Lewati jika biaya terlalu tinggi (skip infinite loop)
     if (currentState.cost > MAX_COST) {
       continue;
     }
 
-    // Dapatkan semua langkah yang valid dari state saat ini
+    // cari langkah valid
     const validMoves = getValidMoves(currentState.board, currentState.pieces);
 
     // Eksplorasi semua langkah yang valid

@@ -26,17 +26,14 @@ interface SearchState {
  */
 const astar = (initialBoard: string[][], initialPieces: PiecesMap, heuristicFunc: (board: string[][], pieces: PiecesMap) => number): SolutionResult => {
   // Definisikan batasan maksimum biaya untuk mencegah loop tak terhingga
-  // Dihitung berdasarkan ukuran papan (tinggi × lebar × 25)
   const MAX_COST = initialBoard.length * initialBoard[0].length * 50;
 
-  // Catat waktu mulai untuk menghitung durasi eksekusi
   const start = performance.now();
 
   // Set untuk menyimpan status yang sudah dikunjungi
   const visitedStates = new Set<string>();
 
-  // Menggunakan priority queue untuk pemilihan status yang efisien
-  // Status dengan nilai f (g + h) terendah akan dipilih terlebih dahulu
+  // Menggunakan priority queue untuk pemilihan status yang efisien dengan status dengan nilai f (g + h) terendah akan dipilih terlebih dahulu
   const openList = new PriorityQueue<SearchState>((a, b) => a.f - b.f);
 
   // Menghitung jumlah simpul yang dikunjungi
@@ -47,16 +44,15 @@ const astar = (initialBoard: string[][], initialPieces: PiecesMap, heuristicFunc
     board: initialBoard,
     pieces: initialPieces,
     stateString: getBoardStateString(initialBoard), // Mengkonversi board menjadi string unik
-    cost: 0, // Biaya awal adalah 0
+    cost: 0,
     heuristic: heuristicFunc(initialBoard, initialPieces), // Menghitung nilai heuristik awal
     f: heuristicFunc(initialBoard, initialPieces), // Nilai f awal sama dengan heuristik karena g = 0
-    moves: [], // Belum ada langkah yang diambil
+    moves: [],
   };
 
   // Masukkan status awal ke dalam antrean
   openList.push(initialState);
 
-  // Loop utama pencarian
   while (!openList.isEmpty()) {
     nodesVisited++;
 
@@ -78,10 +74,10 @@ const astar = (initialBoard: string[][], initialPieces: PiecesMap, heuristicFunc
       };
     }
 
-    // Lewati jika biaya sudah melebihi batas maksimum
+    // Lewati jika biaya sudah melebihi batas maksimum (skip infinite loop)
     if (currentState.cost > MAX_COST) continue;
 
-    // Dapatkan semua langkah yang valid dari status saat ini
+    // cari langkah valid
     const validMoves = getValidMoves(currentState.board, currentState.pieces);
 
     // Iterasi melalui semua langkah yang mungkin
