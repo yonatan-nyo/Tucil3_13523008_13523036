@@ -132,7 +132,54 @@ const parseInputFile = (content: string): BoardConfig => {
 
   const actualPieceCount = uniquePieceSymbols.size;
   if (actualPieceCount !== N) {
-    throw new Error(`Mismatch in piece count: Input specifies ${N} pieces, but ${actualPieceCount} unique pieces found on board.`);
+    throw new Error(
+      `Mismatch in piece count: Input specifies ${N} pieces, but ${actualPieceCount} unique pieces found on board.`
+    );
+  }
+
+  const piecePositions: Record<string, { row: number; col: number }[]> = {};
+
+  boardConfig.forEach((row, rowIdx) => {
+    for (let colIdx = 0; colIdx < row.length; colIdx++) {
+      const char = row[colIdx];
+      if (char !== "." && char !== " " && char !== "K") {
+        if (!piecePositions[char]) {
+          piecePositions[char] = [];
+        }
+        piecePositions[char].push({ row: rowIdx, col: colIdx });
+      }
+    }
+  });
+
+  for (const [piece, positions] of Object.entries(piecePositions)) {
+    const minRow = Math.min(...positions.map((p) => p.row));
+    const maxRow = Math.max(...positions.map((p) => p.row));
+    const minCol = Math.min(...positions.map((p) => p.col));
+    const maxCol = Math.max(...positions.map((p) => p.col));
+
+    const height = maxRow - minRow + 1;
+    const width = maxCol - minCol + 1;
+    const expectedPositions = height * width;
+
+    if (positions.length !== expectedPositions) {
+      throw new Error(`Piece ${piece} is not a solid rectangle.`);
+    }
+
+    if (width === 1 && height === 1) {
+      throw new Error(`Piece ${piece} is a single square. It should be at least 2x1 or 1x2.`);
+    }
+
+    if (width !== 1 && height !== 1) {
+      throw new Error(`Piece ${piece} has invalid dimensions (${width}x${height}). At least one dimension must be 1.`);
+    }
+
+    for (let r = minRow; r <= maxRow; r++) {
+      for (let c = minCol; c <= maxCol; c++) {
+        if (!positions.some((p) => p.row === r && p.col === c)) {
+          throw new Error(`Piece ${piece} is not solid (missing position at row ${r}, col ${c}).`);
+        }
+      }
+    }
   }
 
   return {
