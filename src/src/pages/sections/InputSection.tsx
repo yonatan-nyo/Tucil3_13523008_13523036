@@ -3,7 +3,7 @@ import type { Algorithm, BoardConfig, Heuristic, Stats } from "../../lib/types";
 import ResultStat from "./ResultStat";
 
 const InputSection = ({
-  board,
+  // board,
   boardConfig,
   algorithm,
   setAlgorithm,
@@ -17,7 +17,7 @@ const InputSection = ({
   isDarkMode,
   handleFileUpload,
 }: {
-  board: string[][];
+  // board: string[][];
   setBoard: (board: string[][]) => void;
   boardConfig: BoardConfig | null;
   setBoardConfig: (config: BoardConfig | null) => void;
@@ -71,7 +71,7 @@ const InputSection = ({
           </div>
           {boardConfig && (
             <div className="mt-2 text-sm opacity-75">
-              Board size: {board.length}x{board[0]?.length || 0}
+              Board size: {boardConfig.dimensions.A}x{boardConfig.dimensions.B || 0}
             </div>
           )}
         </div>

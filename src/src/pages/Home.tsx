@@ -327,7 +327,7 @@ export default function RushHourGame() {
             )}
 
             <InputSection
-              board={board}
+              // board={board}
               setBoard={setBoard}
               boardConfig={boardConfig}
               setBoardConfig={setBoardConfig}
