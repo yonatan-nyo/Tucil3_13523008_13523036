@@ -6,6 +6,11 @@
   <p>Tugas Kecil 3 IF2211 Strategi Algoritma</p>
 </div>
 
+## 🔗 Deploy
+
+Aplikasi dapat dicoba secara online melalui link berikut:  
+[https://rushhour-solver.vercel.app/](https://rushhour-solver.vercel.app/)
+
 ## 🔍 Gambaran Umum
 
 Penyelesaian Puzzle Rush Hour adalah aplikasi web yang menyelesaikan permainan puzzle Rush Hour klasik menggunakan berbagai algoritma pencarian. Puzzle terdiri dari grid dengan kendaraan berbagai ukuran. Tujuannya adalah memindahkan mobil merah (kendaraan target) ke pintu keluar dengan menggeser kendaraan lain agar tidak menghalangi jalan.
