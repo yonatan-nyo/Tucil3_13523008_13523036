@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef, type ChangeEvent, useCallback } from "react";
 import algorithms from "../lib/algorithms";
 import type { Algorithm, BoardConfig, Heuristic, PiecesMap, SolutionResult, Stats } from "../lib/types";
-import { applyMove, deepCopy, getPiecesInfo, parseInputFile } from "../lib/helpers";
+import applyMove from "../lib/helpers/applyMove";
+import deepCopy from "../lib/helpers/deepCopy";
+import getPiecesInfo from "../lib/helpers/getPiecesInfo";
+import parseInputFile from "../lib/helpers/parseInputFile";
 import { heuristics } from "../lib/heuristics";
 import HomeHead from "./sections/HomeHead";
 import SolutionControl from "./sections/SolutionControl";
@@ -42,7 +45,7 @@ export default function RushHourGame() {
     if (!file) return;
 
     setIsLoading(true);
-    setError(null);
+    setError("");
     setSolution(null);
     setStats(null);
     setCurrentStep(-1);
@@ -94,6 +97,7 @@ export default function RushHourGame() {
       return;
     }
 
+    setError("");
     setIsLoading(true);
     setSolution(null);
     setStats(null);
@@ -212,10 +216,15 @@ export default function RushHourGame() {
       return;
     }
 
+    // Get the current move to determine animation speed based on steps
+    const currentMove = solution.moves[nextStep];
+    // Adjust animation speed based on number of steps (faster for multi-step moves)
+    const moveSpeed = playSpeed / (currentMove.steps || 1);
+
     // Set a timer to apply the next step
     playTimerRef.current = setTimeout(() => {
       applyStepMove(nextStep);
-    }, playSpeed);
+    }, moveSpeed);
 
     // Cleanup when component unmounts or deps change
     return () => {
@@ -281,7 +290,7 @@ export default function RushHourGame() {
       currentBoard = result.board;
       currentPieces = result.pieces;
 
-      outputText += `Gerakan ${idx + 1}: ${move.piece}-${move.direction}\n`;
+      outputText += `Gerakan ${idx + 1}: ${move.piece}-${move.direction}-${move.steps} steps\n`;
 
       const boardString = currentBoard.map((row) => row.join("")).join("\n");
       outputText += boardString + "\n\n\n";
@@ -301,10 +310,7 @@ export default function RushHourGame() {
 
   return (
     <Layout>
-      <div
-        className={`min-h-screen ${
-          isDarkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-900"
-        } transition-colors duration-300`}>
+      <div className={`min-h-screen ${isDarkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-900"} transition-colors duration-300`}>
         <div className="container mx-auto px-4 py-8">
           <HomeHead isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
 
@@ -342,16 +348,10 @@ export default function RushHourGame() {
 
           {/* Game Board and Controls */}
           {displayBoard.length > 0 && (
-            <div
-              className={`mb-8 ${
-                isDarkMode ? "bg-gray-800" : "bg-white"
-              } p-6 rounded-xl shadow-md transition-colors duration-300`}>
+            <div className={`mb-8 ${isDarkMode ? "bg-gray-800" : "bg-white"} p-6 rounded-xl shadow-md transition-colors duration-300`}>
               <h2 className="text-xl font-bold mb-4 flex items-center justify-between">
                 <div className="flex items-center">
-                  <div
-                    className={`w-8 h-8 rounded-full ${
-                      isDarkMode ? "bg-blue-600" : "bg-blue-500"
-                    } flex items-center justify-center mr-2`}>
+                  <div className={`w-8 h-8 rounded-full ${isDarkMode ? "bg-blue-600" : "bg-blue-500"} flex items-center justify-center mr-2`}>
                     <span className="text-white">2</span>
                   </div>
                   Game Board
@@ -366,9 +366,7 @@ export default function RushHourGame() {
                       {row.map((cell, colIdx) => (
                         <div
                           key={`cell-${rowIdx}-${colIdx}`}
-                          className={`w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center m-0.5 rounded-md text-lg font-bold ${getCellStyle(
-                            cell
-                          )} transition-all duration-300`}>
+                          className={`w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center m-0.5 rounded-md text-lg font-bold ${getCellStyle(cell)} transition-all duration-300`}>
                           {cell !== "." ? cell : ""}
                         </div>
                       ))}
@@ -400,10 +398,7 @@ export default function RushHourGame() {
           {solution && solution.moves.length > 0 && (
             <div className={`${isDarkMode ? "bg-gray-800" : "bg-white"} p-6 rounded-xl shadow-md transition-colors duration-300`}>
               <h2 className="text-xl font-bold mb-4 flex items-center">
-                <div
-                  className={`w-8 h-8 rounded-full ${
-                    isDarkMode ? "bg-blue-600" : "bg-blue-500"
-                  } flex items-center justify-center mr-2`}>
+                <div className={`w-8 h-8 rounded-full ${isDarkMode ? "bg-blue-600" : "bg-blue-500"} flex items-center justify-center mr-2`}>
                   <span className="text-white">3</span>
                 </div>
                 Solution Steps
@@ -414,13 +409,7 @@ export default function RushHourGame() {
                   key="initial"
                   onClick={() => applyStepMove(-1)}
                   className={`cursor-pointer p-3 rounded-lg ${
-                    currentStep === -1
-                      ? isDarkMode
-                        ? "bg-blue-900/40 border-blue-700"
-                        : "bg-blue-100 border-blue-300"
-                      : isDarkMode
-                      ? "bg-gray-700 hover:bg-gray-600"
-                      : "bg-gray-50 hover:bg-gray-100"
+                    currentStep === -1 ? (isDarkMode ? "bg-blue-900/40 border-blue-700" : "bg-blue-100 border-blue-300") : isDarkMode ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-50 hover:bg-gray-100"
                   } border transition-colors`}>
                   <div className="font-bold">Initial Board</div>
                   <div className="text-sm opacity-75">Starting position</div>
@@ -443,7 +432,9 @@ export default function RushHourGame() {
                       <span>Move {idx + 1}</span>
                       <span className="text-sm opacity-75">Piece {move.piece}</span>
                     </div>
-                    <div className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>Direction: {move.direction}</div>
+                    <div className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>
+                      Direction: {move.direction} {move.steps > 1 ? `(${move.steps} steps)` : ""}
+                    </div>
                   </div>
                 ))}
               </div>

@@ -1,4 +1,7 @@
-import { applyMove, getBoardStateString, getValidMoves, isSolved } from "../helpers";
+import applyMove from "../helpers/applyMove";
+import getBoardStateString from "../helpers/getBoardStateString";
+import getValidMoves from "../helpers/getValidMoves";
+import isSolved from "../helpers/isSolved";
 import { PriorityQueue } from "../priorityQueue";
 import type { Move, PiecesMap, SolutionResult } from "../types";
 
@@ -19,14 +22,10 @@ interface SearchState {
  * @param initialPieces Informasi kendaraan awal pada papan
  * @param heuristicFunc Fungsi heuristik yang digunakan untuk menilai jarak ke solusi
  */
-const greedy = (
-  initialBoard: string[][],
-  initialPieces: PiecesMap,
-  heuristicFunc: (board: string[][], pieces: PiecesMap) => number
-): SolutionResult => {
+const greedy = (initialBoard: string[][], initialPieces: PiecesMap, heuristicFunc: (board: string[][], pieces: PiecesMap) => number): SolutionResult => {
   // Definisikan batasan maksimum biaya untuk mencegah loop tak terhingga
   // Dihitung berdasarkan ukuran papan (tinggi × lebar × 25)
-  const MAX_COST = initialBoard.length * initialBoard[0].length * 35;
+  const MAX_COST = initialBoard.length * initialBoard[0].length * 50;
 
   // Catat waktu mulai untuk menghitung durasi eksekusi
   const start = performance.now();
@@ -95,7 +94,7 @@ const greedy = (
 
       // Hitung nilai heuristik dan biaya baru
       const newHeuristic = heuristicFunc(newBoard, newPieces);
-      const newCost = currentState.cost + 1;
+      const newCost = currentState.cost + move.steps;
 
       // Tambahkan ke antrean hanya jika biaya tidak melebihi batas maksimum
       if (newCost <= MAX_COST) {

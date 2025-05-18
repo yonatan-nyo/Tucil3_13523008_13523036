@@ -1,4 +1,7 @@
-import { applyMove, getBoardStateString, getValidMoves, isSolved } from "../helpers";
+import applyMove from "../helpers/applyMove";
+import getBoardStateString from "../helpers/getBoardStateString";
+import getValidMoves from "../helpers/getValidMoves";
+import isSolved from "../helpers/isSolved";
 import { PriorityQueue } from "../priorityQueue";
 import type { Move, PiecesMap, SolutionResult } from "../types";
 
@@ -26,7 +29,7 @@ interface Solution {
 const ucs = (initialBoard: string[][], initialPieces: PiecesMap): SolutionResult => {
   // Definisikan batasan maksimum biaya untuk mencegah loop tak terhingga
   // Dihitung berdasarkan ukuran papan (tinggi × lebar × 25)
-  const MAX_COST = initialBoard.length * initialBoard[0].length * 35;
+  const MAX_COST = initialBoard.length * initialBoard[0].length * 50;
 
   // Catat waktu mulai untuk menghitung durasi eksekusi
   const start = performance.now();
@@ -110,7 +113,7 @@ const ucs = (initialBoard: string[][], initialPieces: PiecesMap): SolutionResult
         board: result.board,
         pieces: result.pieces,
         stateString: newStateString,
-        cost: currentState.cost + 1, // Biaya bertambah 1 untuk setiap langkah
+        cost: currentState.cost + move.steps, // Cost increases by number of steps
         moves: [...currentState.moves, move], // Tambahkan langkah baru ke daftar langkah
       };
 

@@ -30,6 +30,7 @@ export interface BoardConfig {
 export interface Move {
   piece: string;
   direction: Direction;
+  steps: number;
 }
 
 export interface SolutionResult {

@@ -1,4 +1,7 @@
-import { applyMove, getBoardStateString, getValidMoves, isSolved } from "../helpers";
+import applyMove from "../helpers/applyMove";
+import getBoardStateString from "../helpers/getBoardStateString";
+import getValidMoves from "../helpers/getValidMoves";
+import isSolved from "../helpers/isSolved";
 import { PriorityQueue } from "../priorityQueue";
 import type { Move, PiecesMap, SolutionResult } from "../types";
 
@@ -20,7 +23,7 @@ interface SearchState {
  */
 const dijkstra = (initialBoard: string[][], initialPieces: PiecesMap): SolutionResult => {
   // Batasan maksimum biaya untuk mencegah loop tak terhingga
-  const MAX_COST = initialBoard.length * initialBoard[0].length * 35;
+  const MAX_COST = initialBoard.length * initialBoard[0].length * 50;
 
   // Catat waktu mulai untuk pengukuran kinerja
   const start = performance.now();
@@ -89,7 +92,7 @@ const dijkstra = (initialBoard: string[][], initialPieces: PiecesMap): SolutionR
       const newStateString = getBoardStateString(newBoard);
 
       // Hitung biaya baru untuk mencapai state ini
-      const newCost = currentState.cost + 1;
+      const newCost = currentState.cost + move.steps;
 
       // Jika ditemukan jalur yang lebih pendek atau state baru belum dikunjungi
       if (newCost < (distanceMap.get(newStateString) || Infinity)) {
