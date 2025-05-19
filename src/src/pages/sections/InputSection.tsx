@@ -1,4 +1,4 @@
-import { Check, ChevronRight, Upload } from "lucide-react";
+import { Check, ChevronRight, Upload, RotateCcw } from "lucide-react";
 import type { Algorithm, BoardConfig, Heuristic, Stats } from "../../lib/types";
 import ResultStat from "./ResultStat";
 
@@ -11,6 +11,7 @@ const InputSection = ({
   setHeuristic,
   solvePuzzle,
   isLoading,
+  resetBoard,
   error,
   setError,
   stats,
@@ -154,7 +155,7 @@ const InputSection = ({
           )}
         </button>
 
-        {/* {boardConfig && (
+        {boardConfig && (
           <button
             onClick={resetBoard}
             className={`${
@@ -163,7 +164,7 @@ const InputSection = ({
             <RotateCcw size={16} className="mr-1" />
             Reset
           </button>
-        )} */}
+        )}
       </div>
 
       {error && (

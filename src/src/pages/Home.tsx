@@ -175,9 +175,16 @@ export default function RushHourGame() {
   );
 
   const resetBoard = () => {
-    if (!board.length) return;
-    setDisplayBoard(deepCopy(board));
+    setBoardConfig(null);
+    setBoard([]);
+    setPieces({});
+    setAlgorithm("greedy");
+    setHeuristic("manhattan");
+    setSolution(null);
+    setStats(null);
     setCurrentStep(-1);
+    setDisplayBoard([]);
+    setError(null);
     stopAnimation();
   };
 

@@ -30,48 +30,29 @@ const parseInputFile = (content: string): BoardConfig => {
   if (kLocation.col === -1 || kLocation.row === -1) {
     throw new Error("There should be one K in the board.");
   }
-  const isKOnTheLeft = kLocation.col === 0 && kLocation.col < height;
-  const isKOnTheTop = kLocation.col <= width && kLocation.row === 0;
-  const isKOnTheRight = kLocation.col === width && kLocation.row < height;
-  const isKOnTheBottom = kLocation.col < width && kLocation.row === height;
+  const isKOnTheLeft = kLocation.col === 0 && boardConfig[kLocation.row].length === width + 1;
+  const isKOnTheTop = kLocation.row === 0 && boardConfig.length === height + 1;
+  const isKOnTheRight = kLocation.col === width && boardConfig[kLocation.row].length === width + 1;
+  const isKOnTheBottom = kLocation.row === height && boardConfig.length === height + 1;
 
   if (!isKOnTheLeft && !isKOnTheTop && !isKOnTheRight && !isKOnTheBottom) {
     throw new Error("K shouldnt be in the middle of the board.");
   }
 
-  // Validate boardConfig
-  if (boardConfig.length !== height + (isKOnTheTop || isKOnTheBottom ? 1 : 0)) {
-    throw new Error(`Expected ${height} rows in boardConfig, got ${boardConfig.length}.`);
+  const expectedRows = height + (isKOnTheBottom || isKOnTheTop ? 1 : 0);
+  if (boardConfig.length !== expectedRows) {
+    throw new Error(`Expected ${expectedRows} rows in boardConfig, got ${boardConfig.length}.`);
   }
   boardConfig.forEach((row, idx) => {
-    console.log(isKOnTheLeft, isKOnTheTop, isKOnTheRight, isKOnTheBottom);
-    if (isKOnTheLeft && isKOnTheTop) {
-      if (!row.includes("K")) {
-        if (row.length !== width) {
-          throw new Error(`Each row without K must have exactly ${width} columns.`);
+    if (isKOnTheLeft) {
+      if (row.includes("K")) {
+        if (row.length !== width + 1) {
+          throw new Error(`Each row must have ${width + 1} columns.`);
         }
-      }
-    } else if (isKOnTheLeft && isKOnTheBottom) {
-      if (!row.includes("K")) {
-        if (row.length !== width) {
-          throw new Error(`Each row without K must have exactly ${width} columns.`);
+      } else {
+        if (row.length !== width && row.length !== width + 1) {
+          throw new Error(`Each row must have ${width} or ${width + 1} columns.`);
         }
-      }
-    } else if (isKOnTheRight && isKOnTheTop) {
-      if (!row.includes("K")) {
-        if (row.length !== width) {
-          throw new Error(`Each row without K must have exactly ${width} columns.`);
-        }
-      }
-    } else if (isKOnTheRight && isKOnTheBottom) {
-      if (!row.includes("K")) {
-        if (row.length !== width) {
-          throw new Error(`Each row without K must have exactly ${width} columns.`);
-        }
-      }
-    } else if (isKOnTheLeft) {
-      if (row.length !== width + 1) {
-        throw new Error(`Each row must have ${width + 1} columns.`);
       }
     } else if (isKOnTheRight) {
       if (row.includes("K")) {
@@ -100,10 +81,18 @@ const parseInputFile = (content: string): BoardConfig => {
     }
   });
   let primaryPieceCol = -1;
+  let primaryPieceRow = -1;
+  let primaryPieceOrientation = "unknown";
   for (let i = 0; i < boardConfig.length; i++) {
     const pIndex = boardConfig[i].indexOf("P");
     if (pIndex !== -1) {
+      primaryPieceRow = i;
       primaryPieceCol = pIndex;
+      if (pIndex + 1 < boardConfig[i].length && boardConfig[i][pIndex + 1] === "P") {
+        primaryPieceOrientation = "horizontal";
+      } else if (i + 1 < boardConfig.length && boardConfig[i + 1][pIndex] === "P") {
+        primaryPieceOrientation = "vertical";
+      }
       break;
     }
   }
@@ -112,12 +101,12 @@ const parseInputFile = (content: string): BoardConfig => {
     throw new Error("Primary piece (P) not found on the board.");
   }
 
-  if (isKOnTheBottom || isKOnTheTop) {
-    const kRow = isKOnTheBottom ? height : 0;
-    const bottomRow = boardConfig[kRow];
-    const kIndex = bottomRow.indexOf("K");
-
-    if (kIndex !== primaryPieceCol) {
+  if (primaryPieceOrientation === "horizontal") {
+    if (primaryPieceRow !== kLocation.row) {
+      throw new Error("Exit (K) must be aligned with the primary piece (P).");
+    }
+  } else if (primaryPieceOrientation === "vertical") {
+    if (primaryPieceCol !== kLocation.col) {
       throw new Error("Exit (K) must be aligned with the primary piece (P).");
     }
   }
