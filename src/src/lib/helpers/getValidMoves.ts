@@ -2,7 +2,7 @@ import { DIRECTIONS } from "../constant";
 import type { Move, PiecesMap } from "../types";
 
 const getValidMoves = (board: string[][], pieces: PiecesMap): Move[] => {
-  if (isPrimaryPieceAdjacentToExit(board, pieces)) {
+  if (isPrimaryPieceAdjacentToExit(pieces)) {
     return [];
   }
 
@@ -129,7 +129,7 @@ const getValidMoves = (board: string[][], pieces: PiecesMap): Move[] => {
 };
 
 // Helper function to check if primary piece is adjacent to exit
-function isPrimaryPieceAdjacentToExit(board: string[][], pieces: PiecesMap): boolean {
+function isPrimaryPieceAdjacentToExit(pieces: PiecesMap): boolean {
   const primaryPiece = Object.values(pieces).find(p => p.isPrimary);
   const exitPiece = pieces["K"];
   
