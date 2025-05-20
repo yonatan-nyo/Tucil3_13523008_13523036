@@ -1,8 +1,9 @@
 6 6
 11
-L...FF
-LBBCD.
-GAACD.
+LB..FF
+LBPCD.
+AAPCD.
 GH.III
-GHJ...
-PPJMM.K
+GH....
+JJ.MM.
+  K  

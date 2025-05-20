@@ -2,6 +2,10 @@ import { DIRECTIONS } from "../constant";
 import type { Move, PiecesMap } from "../types";
 
 const getValidMoves = (board: string[][], pieces: PiecesMap): Move[] => {
+  if (isPrimaryPieceAdjacentToExit(board, pieces)) {
+    return [];
+  }
+
   const moves: Move[] = [];
   const boardHeight = board.length;
   const boardWidth = board[0].length;
@@ -40,15 +44,6 @@ const getValidMoves = (board: string[][], pieces: PiecesMap): Move[] => {
               direction: DIRECTIONS.LEFT,
               steps: stepsLeft,
             });
-          } else if (leftCell === "K" && piece.isPrimary) {
-            // Allow primary piece to move left into exit
-            stepsLeft++;
-            moves.push({
-              piece: symbol,
-              direction: DIRECTIONS.LEFT,
-              steps: stepsLeft,
-            });
-            canMove = false;
           } else {
             canMove = false;
           }
@@ -73,15 +68,6 @@ const getValidMoves = (board: string[][], pieces: PiecesMap): Move[] => {
               direction: DIRECTIONS.RIGHT,
               steps: stepsRight,
             });
-          } else if (rightCell === "K" && piece.isPrimary) {
-            // Allow primary piece to move right into exit
-            stepsRight++;
-            moves.push({
-              piece: symbol,
-              direction: DIRECTIONS.RIGHT,
-              steps: stepsRight,
-            });
-            canMove = false;
           } else {
             canMove = false;
           }
@@ -107,15 +93,6 @@ const getValidMoves = (board: string[][], pieces: PiecesMap): Move[] => {
               direction: DIRECTIONS.UP,
               steps: stepsUp,
             });
-          } else if (topCell === "K" && piece.isPrimary) {
-            // Allow primary piece to move up into exit
-            stepsUp++;
-            moves.push({
-              piece: symbol,
-              direction: DIRECTIONS.UP,
-              steps: stepsUp,
-            });
-            canMove = false;
           } else {
             canMove = false;
           }
@@ -140,15 +117,6 @@ const getValidMoves = (board: string[][], pieces: PiecesMap): Move[] => {
               direction: DIRECTIONS.DOWN,
               steps: stepsDown,
             });
-          } else if (bottomCell === "K" && piece.isPrimary) {
-            // Allow primary piece to move down into exit
-            stepsDown++;
-            moves.push({
-              piece: symbol,
-              direction: DIRECTIONS.DOWN,
-              steps: stepsDown,
-            });
-            canMove = false;
           } else {
             canMove = false;
           }
@@ -159,5 +127,40 @@ const getValidMoves = (board: string[][], pieces: PiecesMap): Move[] => {
 
   return moves;
 };
+
+// Helper function to check if primary piece is adjacent to exit
+function isPrimaryPieceAdjacentToExit(board: string[][], pieces: PiecesMap): boolean {
+  const primaryPiece = Object.values(pieces).find(p => p.isPrimary);
+  const exitPiece = pieces["K"];
+  
+  if (!primaryPiece || !exitPiece) return false;
+  
+  const exitPos = exitPiece.positions[0];
+  const primaryPositions = primaryPiece.positions;
+  
+  if (primaryPiece.orientation === "horizontal") {
+    const leftPos = primaryPositions[0];
+    const rightPos = primaryPositions[primaryPositions.length - 1];
+    
+    // Check if exit is to the left or right of the primary piece
+    return (
+      // Exit is to the left
+      (exitPos.row === leftPos.row && exitPos.col === leftPos.col - 1) ||
+      // Exit is to the right
+      (exitPos.row === rightPos.row && exitPos.col === rightPos.col + 1)
+    );
+  } else { // vertical
+    const topPos = primaryPositions[0];
+    const bottomPos = primaryPositions[primaryPositions.length - 1];
+    
+    // Check if exit is above or below the primary piece
+    return (
+      // Exit is above
+      (exitPos.col === topPos.col && exitPos.row === topPos.row - 1) ||
+      // Exit is below
+      (exitPos.col === bottomPos.col && exitPos.row === bottomPos.row + 1)
+    );
+  }
+}
 
 export default getValidMoves;
